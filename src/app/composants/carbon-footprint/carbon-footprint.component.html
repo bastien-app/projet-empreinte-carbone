@@ -1,3 +1,50 @@
-<p>carbon-footprint works!</p>
+<div>
+  <p>La consommation pour 100km est de {{ totalConso | number:'1.2-2'}} L/100km</p>
+  <p>Tu as parcouru <span [ngClass]="{hauteDistance : totalDist > 500, basseDistance: totalDist < 100}">{{ totalDist }} km</span></p>
+  <p>Tu as consommé <span [ngClass]="{red : totalConso*totalDist/100 > 7, green : totalConso*totalDist/100 < 4}">{{ totalConso*totalDist/100 |number:'1.2-2' }} L</span> de carburant</p>
+  <p>Quantité totale de C02 : {{ quantiteCO2Totale |number:'1.2-2'}} kg</p>
+  <p>Quantité de CO2 par voyage : {{ (totalDist*totalConso)/100 * 2.3 |number:'1.2-2' }} kg</p>
+</div>
+
+@if (totalConso > 7)
+{
+  <div>Attention, votre consommation est élevée</div>
+}
+
+@if (totalConso < 4)
+{
+  <div>Félicitations, votre consommation est faible</div>
+}
+
+<button (click)="addDistance()">+100km</button>
+
+
+<h2>Liste des voyages</h2>
+<table>
+  <thead>
+  <tr>
+    <th>Distance</th>
+    <th>Consommation pour 100 kms</th>
+    <th>Quantité de CO2</th>
+  </tr>
+  </thead>
+  <tbody>
+    @for (voyage of voyages; track voyage) {
+      <tr>
+        <td>{{ voyage.distanceKm }} km</td>
+        <td>{{ voyage.consommationPour100Km }} L</td>
+        <td>{{ voyage.quantiteCO2 |number:'1.2-2'}} kg</td>
+      </tr>
+    }
+
+  </tbody>
+</table>
+
+<button (click)="genererVoyage()">Générer voyage</button>
+
+
+
+
+
 <app-carbon-footprint-form></app-carbon-footprint-form>
 <app-carbon-footprint-result></app-carbon-footprint-result>

@@ -1,0 +1,17 @@
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.hauteDistance {
+  font-weight: bold;
+  color: green;
+}
+
+.basseDistance {
+  font-weight: bold;
+  color: red;
+}
