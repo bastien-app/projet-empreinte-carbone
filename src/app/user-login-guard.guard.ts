@@ -20,7 +20,7 @@ export class userLoginGuardGuard implements CanActivate {
       return true;
     }
     else {
-      this.router.navigate(['/']).then(() => false);
+      return this.router.navigate(['/']).then(() => false);
     }
   }
 }

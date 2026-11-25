@@ -1,18 +1,18 @@
 import { Component } from '@angular/core';
 import {CarbonFootprintFormComponent} from '../carbon-footprint-form/carbon-footprint-form.component';
 import {CarbonFootprintResultComponent} from '../carbon-footprint-result/carbon-footprint-result.component';
-import {DecimalPipe, NgClass} from '@angular/common';
+import {DatePipe, DecimalPipe, NgClass} from '@angular/common';
 import {CarbonFootprintComputeService} from '../../services/carbon-footprint-compute.service';
 
 @Component({
   selector: 'app-carbon-footprint',
-  imports: [CarbonFootprintFormComponent, CarbonFootprintResultComponent, NgClass, DecimalPipe],
+  imports: [CarbonFootprintFormComponent, CarbonFootprintResultComponent, NgClass, DecimalPipe, DatePipe],
   templateUrl: './carbon-footprint.component.html',
   styleUrl: './carbon-footprint.component.css'
 })
 export class CarbonFootprintComponent {
 
-  voyages: { distanceKm: number; consommationPour100Km: number; quantiteCO2: number }[] = [];
+  voyages: { vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date;}[] = [];
 
   totalDist: number = 0;
   totalConso: number = 0;
@@ -38,7 +38,7 @@ export class CarbonFootprintComponent {
   protected genererVoyage(){
     let distance: number = Math.floor(Math.random() * 1000);
     let conso: number = Math.floor(Math.random() * 25);
-    this.computeService.addVoyage({distanceKm: distance, consommationPour100Km: conso});
+    this.computeService.addVoyage({vehicule:"voiture", distanceKm: distance, consommationPour100Km: conso, date: new Date()});
     this.getResumeData();
 
 }

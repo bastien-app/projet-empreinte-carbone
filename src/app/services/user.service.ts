@@ -6,11 +6,13 @@ import { Injectable } from '@angular/core';
 export class UserService {
 
   user:string = "";
+  password: string = "";
   constructor() { }
 
 
-  login(username: string){
+  login(username: string, password: string) {
     this.user = username;
+    this.password = password;
   }
 
   getUsername(){

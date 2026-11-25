@@ -1,1 +1,37 @@
-<p>carbon-footprint-form works!</p>
+<form [formGroup]="formulaireVoyage" (ngSubmit)="ajoutVoyage()">
+  <p>Ajouter un voyage</p>
+  <label for="type">Type : </label>
+  <select id="vehicule" formControlName="vehicule" (change)="onSelectType($event)" >
+    <option value="">Selectionner une option</option>
+    <option value="voiture">Voiture</option>
+    <option value="avion">Avion</option>
+    <option value="train">Train</option>
+  </select>
+  @if(formulaireVoyage.get("vehicule")?.hasError('required')){
+    <p>Un véhicule est requis</p>
+  }
+  <br>
+  <label for="distance">Distance : </label>
+  <input type="number"  id="distance" name="distance" min="0" formControlName="distance">
+  @if(formulaireVoyage.get("distance")?.hasError('required')){
+    <p>Une distance est requise</p>
+  }
+  <br>
+  @if (formulaireVoyage.get("vehicule")?.value === "voiture"){
+    <label for="conso">Consommation pour 100km : </label>
+    <input type="number" id="conso" name="conso" min="0" formControlName="conso">
+    @if(formulaireVoyage.get("conso")?.hasError('required')){
+      <p>Une consommation est requise</p>
+    }
+    <br>
+  }
+
+  <label for="date">Date : </label>
+  <input type="date" id="date" name="date" formControlName="date">
+  @if(formulaireVoyage.get("date")?.hasError('required')){
+    <p>Une date est requise</p>
+  }
+  <br>
+  <button type="submit" [disabled]="formulaireVoyage.invalid">Ajouter</button>
+</form>
+

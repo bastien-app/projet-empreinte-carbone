@@ -1,3 +1,17 @@
 <h1>Bienvenue sur notre calculateur d'empreinte carbone !</h1>
 
-<button routerLink="/summary" (click)="service.login('Jean')">Sommaire</button>
+<form [formGroup]="formulaireLogin" (ngSubmit)="login()">
+  <label for="login">Identifiant </label>
+  <input type="text" id="login" name="login" formControlName="login" >
+  <br>
+  <label for="password">Mot de passe </label>
+  <input type="password" id="password" name="password" formControlName="password" >
+  <br>
+  <button type="submit">Se connecter</button>
+</form>
+
+@if (error) {
+  <p>{{error}}</p>
+}
+
+
