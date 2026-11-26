@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {HeaderComponent} from './composants/header/header.component';
-import {FooterComponent} from './composants/footer/footer.component';
-import {CarbonFootprintComponent} from './composants/carbon-footprint/carbon-footprint.component';
+import {HttpClientModule} from '@angular/common/http';
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, CarbonFootprintComponent],
+  imports: [RouterOutlet, HttpClientModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

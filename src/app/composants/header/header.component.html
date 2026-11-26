@@ -1,2 +1,3 @@
 <h1>Bienvenu {{ nomUtilisateur }}</h1>
 <button [routerLink]="['/profil', nomUtilisateur]">Profil</button>
+<button type="button" (click)="logout()">Se déconnecter</button>

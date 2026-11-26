@@ -8,10 +8,20 @@
   <input type="password" id="password" name="password" formControlName="password" >
   <br>
   <button type="submit">Se connecter</button>
+  <button type="button" (click)="register()" >S'enregistrer</button>
+  <br>
+  <label for="remember">Se souvenir de moi</label>
+  <input type="checkbox" id="remember" formControlName="remember">
 </form>
 
 @if (error) {
   <p>{{error}}</p>
 }
+
+@if (service.statut){
+  <p>{{ service.statut }}</p>
+}
+
+
 
 

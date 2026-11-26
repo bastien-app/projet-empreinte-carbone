@@ -1,26 +1,38 @@
 import { Injectable } from '@angular/core';
 import {ResumeVoyage} from '../models/resume-voyage';
+import {HttpClient} from '@angular/common/http';
+import {UserService} from './user.service';
+import {Voyage} from '../models/voyage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarbonFootprintComputeService {
 
-  private voyages: { vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date}[] = [
-    { vehicule:'voiture', distanceKm: 50, consommationPour100Km: 5, quantiteCO2: 10, date: new Date(2021, 0, 1)},
-    { vehicule:'voiture', distanceKm: 150, consommationPour100Km: 6, quantiteCO2: 6.5, date: new Date(2021, 0, 1)},
-    { vehicule:'voiture',distanceKm: 250, consommationPour100Km: 7, quantiteCO2: 7.5, date: new Date(2021, 0, 1) },
-    { vehicule:'voiture',distanceKm: 350, consommationPour100Km: 8, quantiteCO2: 5, date: new Date(2021, 0, 1) },
-    { vehicule:'voiture',distanceKm: 450, consommationPour100Km: 9, quantiteCO2: 8, date: new Date(2021, 0, 1) }
-  ]
+  private voyages: { vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date}[] = [];
 
-  constructor() { }
+  constructor(private http: HttpClient, private service: UserService) { }
 
-  async getVoyages(): Promise<{ vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date }[]> {
-    return new Promise(resolve => {
-      setTimeout(() => { resolve (this.voyages);}, 5000)
+  async getVoyages(): Promise<Voyage[]> {
+    return new Promise<Voyage[]>((resolve, reject) => {
 
-    })
+        const userID = this.service.utilisateurID;
+        if (!userID) {
+          resolve([]);
+          return;
+        }
+        const url = `http://localhost:8080/listerVoyages?utilisateurID=${userID}`
+        this.http.get<{ voyages: Voyage[] }>(url).subscribe(res => {
+          this.voyages = res.voyages;
+          resolve(this.voyages);
+        },
+          err => {
+          console.log(err);
+                        reject(err)
+        }
+        )
+
+    });
 
   }
 
@@ -35,24 +47,59 @@ export class CarbonFootprintComputeService {
     else if(voyage.vehicule === 'avion'){
       quantiteCO2 = voyage.distanceKm * 0.2;
     }
-
-    this.voyages.push({...voyage, quantiteCO2});
+    const userID = this.service.utilisateurID;
+    if (!userID) {
+      return; // pas d'utilisateur connecté
+    }
+    const url = `http://localhost:8080/ajouterVoyage?utilisateurID=${userID}`
+    return new Promise<void>((resolve, reject) => {
+      this.http.post(url, {
+        typeVoyage: voyage.vehicule,
+        distanceKm: voyage.distanceKm,
+        consommationPour100Km: voyage.consommationPour100Km,
+        date: voyage.date.toISOString()
+      }).subscribe({
+        next: () => {
+          this.voyages.push({ ...voyage, quantiteCO2 });
+          resolve();
+        },
+        error: err => reject(err)
+      });
+    });
   }
 
 
   async getResumeVoyages():Promise<ResumeVoyage>{
 
-    return new Promise(resolve => {
-      let totalDist = 0;
-      let totalConso = 0;
-      let totalQuantiteCO2 = 0;
-      this.voyages.forEach(voyage => {
-        totalDist += voyage.distanceKm;
-        totalConso += voyage.consommationPour100Km;
-        totalQuantiteCO2 += voyage.quantiteCO2;
-      })
-      totalConso = totalConso/this.voyages.length;
-      resolve ({totalDist: totalDist, totalConso: totalConso, totalQuantiteCO2: totalQuantiteCO2});
+    return new Promise((resolve, reject) => {
+      const userID = this.service.utilisateurID;
+      if (!userID) {
+        resolve({totalDist: 0, totalConso: 0, totalQuantiteCO2: 0}); // pas d'utilisateur connecté
+      }
+      const url = `http://localhost:8080/getResumeVoyages?utilisateurID=${userID}`
+
+      this.http.get<{
+        distanceKm: number | null;
+        consommationPour100Km: number | null;
+        quantiteCO2Totale: number | null;
+      }>(url).subscribe(res => {
+        let totalDist = res.distanceKm;
+        let totalConso = res.consommationPour100Km;
+        let totalQuantiteCO2 = res.quantiteCO2Totale;
+
+        resolve({
+          totalDist: totalDist ?? 0,
+          totalConso: totalConso ?? 0,
+          totalQuantiteCO2: totalQuantiteCO2 ?? 0
+        });
+      },
+        err => {console.log(err)
+          reject(err);
+      });
+
+
+
+
     })
 
 

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {UserService} from '../../services/user.service';
 
 @Component({
@@ -12,7 +12,7 @@ import {UserService} from '../../services/user.service';
 })
 export class HeaderComponent {
 
-  constructor(public service: UserService) { }
+  constructor(public service: UserService, public router: Router) { }
 
   nomUtilisateur: string = "";
   async ngOnInit() {
@@ -20,5 +20,9 @@ export class HeaderComponent {
   }
 
 
-
+  protected logout() {
+    localStorage.removeItem('login');
+    localStorage.removeItem('password');
+    this.router.navigate(['']);
+  }
 }
