@@ -34,7 +34,7 @@ export class CarbonFootprintFormComponent {
     }
   }
 
-  protected ajoutVoyage() {
+  protected async ajoutVoyage() {
     const dateSaisie = this.formulaireVoyage.get('date')?.value;
 
     const voyage = {
@@ -43,6 +43,10 @@ export class CarbonFootprintFormComponent {
       distanceKm: this.formulaireVoyage.get('distance')?.value,
       date: new Date(dateSaisie)
     };
-    this.service.addVoyage(voyage);
+    try {
+      await this.service.addVoyage(voyage);
+    }
+    catch (error) { console.error(error); }
+
   }
 }

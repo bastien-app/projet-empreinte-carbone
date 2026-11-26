@@ -15,8 +15,8 @@ export class HeaderComponent {
   constructor(public service: UserService) { }
 
   nomUtilisateur: string = "";
-  ngOnInit() {
-    this.nomUtilisateur = this.service.getUsername()
+  async ngOnInit() {
+    this.nomUtilisateur = await this.service.getUsername()
   }
 
 

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {ResumeVoyage} from '../models/resume-voyage';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +16,15 @@ export class CarbonFootprintComputeService {
 
   constructor() { }
 
-  getVoyages(): { vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date }[] {
-    return this.voyages;
+  async getVoyages(): Promise<{ vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date }[]> {
+    return new Promise(resolve => {
+      setTimeout(() => { resolve (this.voyages);}, 5000)
+
+    })
+
   }
 
-  addVoyage(voyage:{ vehicule:string ; distanceKm: number; consommationPour100Km: number; date:Date}){
+  async addVoyage(voyage:{ vehicule:string ; distanceKm: number; consommationPour100Km: number; date:Date}){
     let quantiteCO2:number = 0;
     if(voyage.vehicule === 'voiture'){
       quantiteCO2 = (voyage.distanceKm * voyage.consommationPour100Km) / 100 * 2.3
@@ -35,8 +40,9 @@ export class CarbonFootprintComputeService {
   }
 
 
-  getResumeVoyages(){
+  async getResumeVoyages():Promise<ResumeVoyage>{
 
+    return new Promise(resolve => {
       let totalDist = 0;
       let totalConso = 0;
       let totalQuantiteCO2 = 0;
@@ -46,7 +52,10 @@ export class CarbonFootprintComputeService {
         totalQuantiteCO2 += voyage.quantiteCO2;
       })
       totalConso = totalConso/this.voyages.length;
-      return {totalDist: totalDist, totalConso: totalConso, totalQuantiteCO2: totalQuantiteCO2};
+      resolve ({totalDist: totalDist, totalConso: totalConso, totalQuantiteCO2: totalQuantiteCO2});
+    })
+
+
   }
 
 }

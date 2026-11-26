@@ -3,6 +3,8 @@ import {CarbonFootprintFormComponent} from '../carbon-footprint-form/carbon-foot
 import {CarbonFootprintResultComponent} from '../carbon-footprint-result/carbon-footprint-result.component';
 import {DatePipe, DecimalPipe, NgClass} from '@angular/common';
 import {CarbonFootprintComputeService} from '../../services/carbon-footprint-compute.service';
+import { Voyage } from '../../models/voyage'
+import {ResumeVoyage} from '../../models/resume-voyage';
 
 @Component({
   selector: 'app-carbon-footprint',
@@ -12,16 +14,16 @@ import {CarbonFootprintComputeService} from '../../services/carbon-footprint-com
 })
 export class CarbonFootprintComponent {
 
-  voyages: { vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date;}[] = [];
-
+  voyages: Voyage[] = [];
+  chargement:boolean = true;
   totalDist: number = 0;
   totalConso: number = 0;
   quantiteCO2Totale: number = 0;
 
   constructor(private computeService: CarbonFootprintComputeService) {}
 
-  protected getResumeData(){
-    let data = this.computeService.getResumeVoyages();
+  protected async getResumeData(){
+    let data:ResumeVoyage = await this.computeService.getResumeVoyages();
     this.totalDist= data['totalDist'];
     this.totalConso= data['totalConso'];
     this.quantiteCO2Totale = data['totalQuantiteCO2'];
@@ -29,17 +31,26 @@ export class CarbonFootprintComponent {
 
 
 
-  ngOnInit() {
-    this.voyages = this.computeService.getVoyages();
-    this.getResumeData();
+  async ngOnInit() {
+    try {
+      this.voyages = await this.computeService.getVoyages();
+      await this.getResumeData();
+    }
+    catch (error) {
+      console.error(error);
+    }
+    finally {
+      this.chargement = false;
+    }
+
 
   }
 
-  protected genererVoyage(){
+  protected async genererVoyage(){
     let distance: number = Math.floor(Math.random() * 1000);
     let conso: number = Math.floor(Math.random() * 25);
-    this.computeService.addVoyage({vehicule:"voiture", distanceKm: distance, consommationPour100Km: conso, date: new Date()});
-    this.getResumeData();
+    await this.computeService.addVoyage({vehicule:"voiture", distanceKm: distance, consommationPour100Km: conso, date: new Date()});
+    await this.getResumeData();
 
 }
 

@@ -15,8 +15,9 @@ import {Injectable} from '@angular/core';
 export class userLoginGuardGuard implements CanActivate {
   constructor(private router: Router, private service: UserService) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-    if(this.service.getUsername() != "" && this.service.getUsername().trim().length > 0){
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<GuardResult> {
+    let user = await this.service.getUsername();
+    if( user != "" && user.trim().length > 0){
       return true;
     }
     else {

@@ -10,17 +10,23 @@ export class UserService {
   constructor() { }
 
 
-  login(username: string, password: string) {
-    this.user = username;
-    this.password = password;
+  async login(username: string, password: string) {
+
+      this.user = username;
+      this.password = password;
+
+
   }
 
-  getUsername(){
-    if(this.user){
-      return this.user;
-    }
-    else{
-      return '';
-    }
+  async getUsername() {
+    return new Promise<string>((resolve) => {
+      if(this.user){
+        resolve (this.user);
+      }
+      else{
+        resolve ('');
+      }
+    })
+
   }
 }

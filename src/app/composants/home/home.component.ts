@@ -7,7 +7,7 @@ import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} fr
 @Component({
   selector: 'app-home',
   imports: [
-    RouterLink, RouterModule, ReactiveFormsModule, FormsModule
+    RouterModule, ReactiveFormsModule, FormsModule
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
@@ -24,7 +24,7 @@ export class HomeComponent {
   });
 
 
-  login() {
+  async login() {
     let id = this.formulaireLogin.get("login")?.value;
     let mdp = this.formulaireLogin.get("password")?.value;
 
@@ -43,7 +43,7 @@ export class HomeComponent {
     }
 
     else{
-      this.service.login(id,mdp);
+      await this.service.login(id,mdp);
       this.router.navigate(['summary']);
     }
 
