@@ -3,6 +3,7 @@ import {ResumeVoyage} from '../models/resume-voyage';
 import {HttpClient} from '@angular/common/http';
 import {UserService} from './user.service';
 import {Voyage} from '../models/voyage';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,10 @@ import {Voyage} from '../models/voyage';
 export class CarbonFootprintComputeService {
 
   private voyages: { vehicule:string ; distanceKm: number; consommationPour100Km: number; quantiteCO2: number; date:Date}[] = [];
+
+  private voyageSubject = new Subject<Voyage>();
+
+  voyageObservable = this.voyageSubject.asObservable();
 
   constructor(private http: HttpClient, private service: UserService) { }
 
@@ -60,6 +65,7 @@ export class CarbonFootprintComputeService {
         date: voyage.date.toISOString()
       }).subscribe({
         next: () => {
+          this.voyageSubject.next({ ...voyage, quantiteCO2 })
           this.voyages.push({ ...voyage, quantiteCO2 });
           resolve();
         },
@@ -106,3 +112,5 @@ export class CarbonFootprintComputeService {
   }
 
 }
+
+

@@ -1,1 +1,32 @@
-<p>carbon-footprint-result works!</p>
+@if(chargement){
+  <p>Chargement des voyages…</p>
+}
+@else{
+  <h2>Liste des voyages</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>Véhicule</th>
+      <th>Distance</th>
+      <th>Consommation pour 100 kms</th>
+      <th>Quantité de CO2</th>
+      <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (voyage of voyages; track voyage) {
+        <tr>
+          <td>{{voyage.vehicule}}</td>
+          <td>{{ voyage.distanceKm }} km</td>
+          <td>{{ voyage.consommationPour100Km }} L</td>
+          <td>{{ voyage.quantiteCO2 |number:'1.2-2'}} kg</td>
+          <td>{{voyage.date | date:'dd/MM/yyyy'}}</td>
+        </tr>
+      }
+
+    </tbody>
+  </table>
+
+  <button (click)="genererVoyage()">Générer voyage</button>
+
+}
